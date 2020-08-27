@@ -5,10 +5,38 @@
 <body>
 <h1>Welcome to WhatIzIt</h1>
 <h3>Your Images</h3>
+<table>
+    <tr>
+        <td style="padding:10px">ID</td>
+        <td style="padding:10px">Owner</td>
+        <td style="padding:10px">Time</td>
+        <td style="padding:10px">Status</td>
+        <td style="padding:10px">Tags</td>
+        <td style="padding:10px">Actions</td>
+    </tr>
+    {% for my_image in my_images %}
+    <tr>
+        <td style="padding:10px">{{ my_image['id'] }}</td>
+        <td style="padding:10px">{{ my_image['owner'] }}</td>
+        <td style="padding:10px">{{ my_image['upload_ts'] }}</td>
+        <td style="padding:10px">
+            <a href="https://storage.cloud.google.com/gti-gcp10-whatizit.google.com.a.appspot.com/{{ my_image['id'] }}.jpg">Link</a>
+        </td>
+        <td style="padding:10px">{{ my_image['status'] }}</td>
+        <td style="padding:10px">{{ my_image['tags'] }}</td>
+        <td style="padding:10px">
+            <a id="{{ my_image['id'] }}" class="delete_link" href="javascript:void(0)">
+                delete
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
-<a id="post_new_image" href="javascript:void(0)">
-    Post new image
-</a>
+<form method="POST" action="/my_images/post_test" enctype="multipart/form-data">
+    <p><input type="file" name="file" accept=".jpg"></p>
+    <p><input type="submit" value="Submit"></p>
+</form>
 
 <script>
 $(document).ready(function() {
@@ -18,6 +46,16 @@ $(document).ready(function() {
             name: "Donald Duck",
             city: "Duckburg"
         },
+        function(data, status) {
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    });
+
+    $(".delete_link").click(function() {
+        image_id = this.id
+        image_delete_url = '/my_images/delete/' + image_id
+        console.log(image_delete_url)
+        $.post(image_delete_url,
         function(data, status) {
             alert("Data: " + data + "\nStatus: " + status);
         });
