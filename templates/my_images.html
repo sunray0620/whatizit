@@ -1,2 +1,28 @@
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
 <h1>Welcome to WhatIzIt</h1>
 <h3>Your Images</h3>
+
+<a id="post_new_image" href="javascript:void(0)">
+    Post new image
+</a>
+
+<script>
+$(document).ready(function() {
+    $("#post_new_image").click(function() {
+        $.post("/my_images/post", 
+        {
+            name: "Donald Duck",
+            city: "Duckburg"
+        },
+        function(data, status) {
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+    });
+});
+</script>
+</body>
+
