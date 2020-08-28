@@ -48,10 +48,6 @@
 $(document).ready(function() {
     $("#post_new_image").click(function() {
         $.post("/my_images/post", 
-        {
-            name: "Donald Duck",
-            city: "Duckburg"
-        },
         function(data, status) {
             alert("Data: " + data + "\nStatus: " + status);
         });
@@ -60,7 +56,6 @@ $(document).ready(function() {
     $(".delete_link").click(function() {
         image_id = this.id
         image_delete_url = '/my_images/delete/' + image_id
-        console.log(image_delete_url)
         $.post(image_delete_url,
         function(data, status) {
             alert("Data: " + data + "\nStatus: " + status);
@@ -68,7 +63,6 @@ $(document).ready(function() {
     });
 
     $(".preview_link").click(function() {
-        console.log($(this).attr('imageurl'))
         image_url = $(this).attr('imageurl')
         $("#pic_preview").attr("src", image_url)
     });
