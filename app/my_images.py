@@ -13,10 +13,13 @@ storage_client = storage.Client()
 datastore_kind_name = 'image'
 datastore_bucket_name = 'gti-gcp10-whatizit.google.com.a.appspot.com'
 UPLOAD_FOLDER = '/tmp'
+USER_HEADER = 'X-Appengine-User-Nickname'
 
 
 @my_images.route('/my_images')
 def get_my_images():
+    user_name = request.headers.get(USER_HEADER, 'gcp-10')
+
     query = datastore_client.query(kind=datastore_kind_name)
     query.order = ['-upload_ts']
     my_images = query.fetch(limit=100)
@@ -26,7 +29,11 @@ def get_my_images():
         upload_ts = my_image['upload_ts'] - timedelta(hours=7, minutes=0)
         my_image['upload_ts_str'] = upload_ts.strftime('%Y-%m-%d (%H:%M:%S)')
         my_images_list.append(my_image)
-    return render_template("my_images.html", my_images=my_images_list)
+
+    return render_template(
+        "my_images.html",
+        user_name=user_name,
+        my_images=my_images_list)
 
 
 @my_images.route('/my_images/delete/<image_id>', methods=["POST"])
