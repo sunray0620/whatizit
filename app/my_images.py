@@ -48,8 +48,8 @@ def delete_image(image_id):
         {'ContentType': 'application/json'})
 
 
-@my_images.route('/my_images/post_test', methods=['POST'])
-def post_new_image_test():
+@my_images.route('/my_images/post', methods=['POST'])
+def post_new_image():
     uploaded_file = request.files['file']
     if not uploaded_file.filename:
         return (
@@ -58,7 +58,7 @@ def post_new_image_test():
             {'ContentType': 'application/json'})
 
     # Save new entity to datastore
-    owner = 'gcp-10'
+    owner = request.headers.get(USER_HEADER, 'gcp-10')
     new_image_key = datastore_client.key(datastore_kind_name)
     new_image = datastore.Entity(key=new_image_key)
     new_image['upload_ts'] = datetime.now()
@@ -77,24 +77,6 @@ def post_new_image_test():
     bucket = storage_client.bucket(datastore_bucket_name)
     blob = bucket.blob(temp_file_name)
     blob.upload_from_filename(temp_file_path)
-
-    return (
-        json.dumps({'success': True}),
-        200,
-        {'ContentType': 'application/json'})
-
-
-@my_images.route('/my_images/post', methods=['POST'])
-def post_new_image():
-    owner = 'gcp-10'
-    new_image_key = datastore_client.key(datastore_kind_name)
-    new_image = datastore.Entity(key=new_image_key)
-    new_image['upload_ts'] = datetime.now()
-    new_image['owner'] = owner
-    new_image['status'] = 'pending'
-    new_image['tags'] = ''
-
-    datastore_client.put(new_image)
 
     return (
         json.dumps({'success': True}),

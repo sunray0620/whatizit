@@ -9,7 +9,8 @@
     <tr>
         <td style="padding:10px">ID</td>
         <td style="padding:10px">Owner</td>
-        <td style="padding:10px">Time</td>
+        <td style="padding:10px">Upload Time</td>
+        <td style="padding:10px">Preview</td>
         <td style="padding:10px">Status</td>
         <td style="padding:10px">Tags</td>
         <td style="padding:10px">Actions</td>
@@ -20,7 +21,7 @@
         <td style="padding:10px">{{ my_image['owner'] }}</td>
         <td style="padding:10px">{{ my_image['upload_ts_str'] }}</td>
         <td style="padding:10px">
-            <a href="https://storage.cloud.google.com/gti-gcp10-whatizit.google.com.a.appspot.com/{{ my_image['id'] }}.jpg">Link</a>
+            <a class="preview_link" href="javascript:void(0)" imageurl="https://storage.cloud.google.com/gti-gcp10-whatizit.google.com.a.appspot.com/{{ my_image['id'] }}.jpg">Link</a>
         </td>
         <td style="padding:10px">{{ my_image['status'] }}</td>
         <td style="padding:10px">{{ my_image['tags'] }}</td>
@@ -33,10 +34,15 @@
     {% endfor %}
 </table>
 
-<form method="POST" action="/my_images/post_test" enctype="multipart/form-data">
+<form method="POST" action="/my_images/post" enctype="multipart/form-data">
     <p><input type="file" name="file" accept=".jpg"></p>
     <p><input type="submit" value="Submit"></p>
 </form>
+
+<h2>Preview</h2>
+<div>
+<img id="pic_preview" src="#" alt="ALT" width="600">
+</div>
 
 <script>
 $(document).ready(function() {
@@ -59,6 +65,12 @@ $(document).ready(function() {
         function(data, status) {
             alert("Data: " + data + "\nStatus: " + status);
         });
+    });
+
+    $(".preview_link").click(function() {
+        console.log($(this).attr('imageurl'))
+        image_url = $(this).attr('imageurl')
+        $("#pic_preview").attr("src", image_url)
     });
 });
 </script>
