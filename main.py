@@ -16,6 +16,7 @@
 from flask import Flask, render_template
 from app.my_images import my_images
 
+import os
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
@@ -27,6 +28,12 @@ app.register_blueprint(my_images)
 def hello():
     """Return a friendly HTTP greeting."""
     return render_template("home.html")
+
+
+@app.route('/me')
+def me():
+    """Return a friendly HTTP greeting."""
+    return os.tem
 
 
 @app.errorhandler(404)
