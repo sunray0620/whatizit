@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # [START gae_python38_app]
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from app.my_images import my_images
 
 
@@ -32,7 +32,8 @@ def hello():
 @app.route('/me')
 def me():
     """Return a friendly HTTP greeting."""
-    return 'me-myaccount'
+    data = dict(request.headers)
+    return data
 
 
 @app.errorhandler(404)
