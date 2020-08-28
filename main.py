@@ -29,6 +29,12 @@ def hello():
     return render_template("home.html")
 
 
+@app.route('/me')
+def me():
+    """Return a friendly HTTP greeting."""
+    return 'me-myaccount'
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return 'Sorry, did not find the page. <br/> - GTI Project by GCP-10'

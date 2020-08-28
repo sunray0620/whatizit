@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request
 from google.cloud import datastore
 from google.cloud import storage
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import json
+import os
 
 my_images = Blueprint('my_images', __name__)
 datastore_client = datastore.Client()
@@ -11,14 +12,21 @@ storage_client = storage.Client()
 
 datastore_kind_name = 'image'
 datastore_bucket_name = 'gti-gcp10-whatizit.google.com.a.appspot.com'
+UPLOAD_FOLDER = '/tmp'
 
 
 @my_images.route('/my_images')
 def get_my_images():
     query = datastore_client.query(kind=datastore_kind_name)
     query.order = ['-upload_ts']
-    my_images = query.fetch(limit=10)
-    return render_template("my_images.html", my_images=my_images)
+    my_images = query.fetch(limit=100)
+    my_images_list = []
+
+    for my_image in my_images:
+        upload_ts = my_image['upload_ts'] - timedelta(hours=7, minutes=0)
+        my_image['upload_ts_str'] = upload_ts.strftime('%Y-%m-%d (%H:%M:%S)')
+        my_images_list.append(my_image)
+    return render_template("my_images.html", my_images=my_images_list)
 
 
 @my_images.route('/my_images/delete/<image_id>', methods=["POST"])
@@ -55,7 +63,7 @@ def post_new_image_test():
     # Save file locally
     new_image_id = str(new_image.id)
     temp_file_name = '{0}.jpg'.format(new_image_id)
-    temp_file_path = 'temp/' + temp_file_name
+    temp_file_path = os.path.join(UPLOAD_FOLDER, temp_file_name)
     uploaded_file.save(temp_file_path)
 
     # Upload to cloud storage
