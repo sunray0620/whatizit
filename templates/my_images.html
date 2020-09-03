@@ -1,72 +1,71 @@
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-
-<body>
-<h1>Welcome to WhatIzIt</h1>
-<h3>Your Images ({{ user_name }})</h3>
-<table>
-    <tr>
-        <td style="padding:10px">ID</td>
-        <td style="padding:10px">Owner</td>
-        <td style="padding:10px">Upload Time</td>
-        <td style="padding:10px">Preview</td>
-        <td style="padding:10px">Status</td>
-        <td style="padding:10px">Tags</td>
-        <td style="padding:10px">Actions</td>
-    </tr>
-    {% for my_image in my_images %}
-    <tr>
-        <td style="padding:10px">{{ my_image['id'] }}</td>
-        <td style="padding:10px">{{ my_image['owner'] }}</td>
-        <td style="padding:10px">{{ my_image['upload_ts_str'] }}</td>
-        <td style="padding:10px">
-            <a class="preview_link" href="javascript:void(0)" imageurl="https://storage.cloud.google.com/gti-gcp10-whatizit.google.com.a.appspot.com/{{ my_image['id'] }}.jpg">Preview</a>
-        </td>
-        <td style="padding:10px">{{ my_image['status'] }}</td>
-        <td style="padding:10px">{{ my_image['tags'] }}</td>
-        <td style="padding:10px">
-            <a id="{{ my_image['id'] }}" class="delete_link" href="javascript:void(0)">
-                delete
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-
-<form method="POST" action="/my_images/post" enctype="multipart/form-data">
-    <p><input type="file" name="file" accept=".jpg"></p>
-    <p><input type="submit" value="Submit"></p>
-</form>
-
-<h2>Preview</h2>
-<div>
-<img id="pic_preview" src="#" alt="ALT" width="600">
-</div>
-
-<script>
-$(document).ready(function() {
-    $("#post_new_image").click(function() {
-        $.post("/my_images/post", 
-        function(data, status) {
-            alert("Data: " + data + "\nStatus: " + status);
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    
+    <body>
+    <h1>Welcome to WhatIzIt</h1>
+    <h3>Your Images ({{ user_name }})</h3>
+    <table>
+        <tr>
+            <td style="padding:10px">ID</td>
+            <td style="padding:10px">Owner</td>
+            <td style="padding:10px">Upload Time</td>
+            <td style="padding:10px">Preview</td>
+            <td style="padding:10px">Tags</td>
+            <td style="padding:10px">Actions</td>
+        </tr>
+        {% for my_image in my_images %}
+        <tr>
+            <td style="padding:10px">{{ my_image['id'] }}</td>
+            <td style="padding:10px">{{ my_image['owner'] }}</td>
+            <td style="padding:10px">{{ my_image['upload_ts_str'] }}</td>
+            <td style="padding:10px">
+                <a class="preview_link" href="javascript:void(0)" imageurl="https://storage.cloud.google.com/gti-gcp10-whatizit.google.com.a.appspot.com/{{ my_image['id'] }}.jpg">Preview</a>
+            </td>
+            <td style="padding:10px">{{ my_image['tags'] }}</td>
+            <td style="padding:10px">
+                <a id="{{ my_image['id'] }}" class="delete_link" href="javascript:void(0)">
+                    delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <form method="POST" action="/my_images/post" enctype="multipart/form-data">
+        <p><input type="file" name="file" accept=".jpg"></p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+    
+    <h2>Preview</h2>
+    <div>
+    <img id="pic_preview" src="#" alt="ALT" width="600">
+    </div>
+    
+    <script>
+    $(document).ready(function() {
+        $("#post_new_image").click(function() {
+            $.post("/my_images/post",
+            function(data, status) {
+                alert("Data: " + data + "\nStatus: " + status);
+            });
+        });
+    
+        $(".delete_link").click(function() {
+            image_id = this.id
+            image_delete_url = '/my_images/delete/' + image_id
+            $.post(image_delete_url,
+            function(data, status) {
+                alert("Data: " + data + "\nStatus: " + status);
+            });
+        });
+    
+        $(".preview_link").click(function() {
+            image_url = $(this).attr('imageurl')
+            $("#pic_preview").attr("src", image_url)
         });
     });
-
-    $(".delete_link").click(function() {
-        image_id = this.id
-        image_delete_url = '/my_images/delete/' + image_id
-        $.post(image_delete_url,
-        function(data, status) {
-            alert("Data: " + data + "\nStatus: " + status);
-        });
-    });
-
-    $(".preview_link").click(function() {
-        image_url = $(this).attr('imageurl')
-        $("#pic_preview").attr("src", image_url)
-    });
-});
-</script>
-</body>
-
+    </script>
+    </body>
+    
+    
